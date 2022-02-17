@@ -1,0 +1,5 @@
+$tablet-bp: 600px;
+$mobile-bp: 450px;
+
+$tablet: "max-width: #{$tablet-bp - 1}";
+$mobile: "max-width: #{$mobile-bp - 1}";

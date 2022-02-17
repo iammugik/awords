@@ -1,0 +1,45 @@
+.keyboard {
+  --keyboard-width: 600px;
+  display: flex;
+  flex-flow: column nowrap;
+  place-items: center;
+  margin: auto;
+  gap: 10px;
+  width: var(--keyboard-width);
+
+  @media ($tablet) {
+    --keyboard-width: 100vw;
+  }
+}
+
+.keyboard__row {
+  display: flex;
+  gap: calc(min(var(--keyboard-width), 100vw) / 100 * 1);
+}
+
+.keyboard__key {
+  display: inline-block;
+  margin: 0;
+  padding: 0 calc(min(var(--keyboard-width), 100vw) / 100 * 1);
+  min-width: calc(min(var(--keyboard-width), 100vw) / 100 * 7);
+  min-height: 40px;
+  height: calc(min(var(--keyboard-width), 100vw) / 100 * 9);
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  background: #e2e4e8;
+  border: none;
+  border-bottom: 2px solid #c2c4c8;
+  border-radius: 4px;
+  cursor: pointer;
+  transition-property: border-color, transform;
+
+  @media ($mobile) {
+    font-size: 13px;
+  }
+}
+
+.keyboard__key--backspace {
+  min-width: calc(min(var(--keyboard-width), 100vw) / 100 * 13);
+}
