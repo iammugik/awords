@@ -1,2 +1,41 @@
 .gameGrid {
+  --columnsCount: 5;
+  --rowsCount: 6;
+  --gameGrid-width: var(--app-width, 600px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 50px auto 0;
+  width: var(--gameGrid-width);
+}
+
+.gameGrid__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--columnsCount), auto);
+  grid-template-rows: var(--rowsCount);
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: auto;
+}
+
+.gameGrid__cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  font-size: clamp(15px, 10vw, 31px);
+  font-weight: 800;
+  text-transform: uppercase;
+  background: #f0f2f6;
+  border-radius: 4px;
+}
+
+.gameGrid__cell--present {
+  background: var(--yellow);
+}
+
+.gameGrid__cell--truly {
+  background: var(--green);
 }

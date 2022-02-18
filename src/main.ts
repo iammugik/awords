@@ -4,6 +4,8 @@ import { store, key } from "@/stores/store";
 
 const i18n = createI18n({
   legacy: false,
+  locale: "ru",
+  fallbackLocale: "ru",
 });
 
 import App from "./App.vue";

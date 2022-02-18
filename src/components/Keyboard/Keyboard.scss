@@ -1,15 +1,12 @@
 .keyboard {
-  --keyboard-width: 600px;
+  --keyboard-width: var(--app-width, 600px);
   display: flex;
   flex-flow: column nowrap;
-  place-items: center;
-  margin: auto;
+  align-items: center;
+  justify-content: center;
   gap: 10px;
+  margin: auto;
   width: var(--keyboard-width);
-
-  @media ($tablet) {
-    --keyboard-width: 100vw;
-  }
 }
 
 .keyboard__row {

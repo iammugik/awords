@@ -3,3 +3,13 @@ $mobile-bp: 450px;
 
 $tablet: "max-width: #{$tablet-bp - 1}";
 $mobile: "max-width: #{$mobile-bp - 1}";
+
+:root {
+  --app-width: 600px;
+  --green: #c4f7a4;
+  --yellow: #f7e9a4;
+
+  @media ($tablet) {
+    --app-width: 100vw;
+  }
+}
