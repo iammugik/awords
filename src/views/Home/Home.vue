@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { GameStatus, useStore } from "@/stores/store";
-import { ref, watch, computed, onMounted } from "vue";
+import { onMounted } from "vue";
 import Keyboard from "@/components/Keyboard/Keyboard.vue";
 import GameGrid from "@/components/GameGrid/GameGrid.vue";
 
@@ -24,11 +24,16 @@ onMounted(async () => {
   <template v-else>
     <div class="home__gameGrid">
       <GameGrid
-        :grid="state.letters"
-        :grid-size="[state.wordLength, state.rowsCount]"
+        :guesses="state.guesses"
+        :columns-count="state.wordLength"
+        :rows-count="state.rowsCount"
       />
     </div>
-    <Keyboard class="home__keyboard" :onKeyClick="handleKeyClick" />
+    <Keyboard
+      class="home__keyboard"
+      :guesses="state.guesses"
+      :onKeyClick="handleKeyClick"
+    />
   </template>
 </template>
 

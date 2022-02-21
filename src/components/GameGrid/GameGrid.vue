@@ -2,25 +2,32 @@
 import type { State } from "@/stores/store";
 
 const props = defineProps<{
-  gridSize: [number, number];
-  grid: State["letters"];
+  columnsCount: number;
+  rowsCount: number;
+  guesses: State["guesses"];
 }>();
 </script>
 
 <template>
   <div
     class="gameGrid"
-    :style="`--columnsCount: ${gridSize[0]}; --rowsCount: ${gridSize[1]}`"
+    :style="`--columnsCount: ${columnsCount}; --rowsCount: ${rowsCount}`"
   >
     <div class="gameGrid__grid">
-      <div
-        v-for="num in gridSize[0] * gridSize[1]"
-        :key="num"
-        :class="`gameGrid__cell ${
-          grid[num - 1]?.status ? 'gameGrid__cell--' + grid[num - 1].status : ''
-        }`"
-      >
-        {{ grid[num - 1] ? grid[num - 1].letter : "" }}
+      <div v-for="rowIndex in rowsCount" :key="rowIndex" class="gameGrid__row">
+        <div
+          v-for="colIndex in columnsCount"
+          :key="colIndex"
+          :class="`gameGrid__cell ${
+            guesses[rowIndex - 1]?.[colIndex - 1]?.status
+              ? 'gameGrid__cell--' + guesses[rowIndex - 1][colIndex - 1].status
+              : ''
+          }`"
+        >
+          <template v-if="guesses[rowIndex - 1]?.[colIndex - 1]">
+            {{ guesses[rowIndex - 1][colIndex - 1].letter }}
+          </template>
+        </div>
       </div>
     </div>
   </div>

@@ -1,42 +1,64 @@
 .keyboard {
-  --keyboard-width: var(--app-width, 600px);
+  --keyboard-width: var(--app-width);
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: calc(min(var(--keyboard-width), 100vw) / 100);
   margin: auto;
   width: var(--keyboard-width);
-}
 
-.keyboard__row {
-  display: flex;
-  gap: calc(min(var(--keyboard-width), 100vw) / 100 * 1);
-}
-
-.keyboard__key {
-  display: inline-block;
-  margin: 0;
-  padding: 0 calc(min(var(--keyboard-width), 100vw) / 100 * 1);
-  min-width: calc(min(var(--keyboard-width), 100vw) / 100 * 7);
-  min-height: 40px;
-  height: calc(min(var(--keyboard-width), 100vw) / 100 * 9);
-  font-size: 15px;
-  font-weight: 700;
-  text-align: center;
-  text-transform: uppercase;
-  background: #e2e4e8;
-  border: none;
-  border-bottom: 2px solid #c2c4c8;
-  border-radius: 4px;
-  cursor: pointer;
-  transition-property: border-color, transform;
-
-  @media ($mobile) {
-    font-size: 13px;
+  @media ($tablet) {
+    gap: calc(min(var(--keyboard-width), 100vw) / 100 * 2);
   }
 }
 
+.keyboard__row {
+  --keys-gap: calc(min(var(--keyboard-width), 100vw) / 100);
+  display: flex;
+  gap: var(--keys-gap);
+}
+
+.keyboard__key {
+  --optimal-ratio: calc(1 / 12);
+  --key-size: calc(min(var(--keyboard-width), 100vw) * var(--optimal-ratio) - (var(--keys-gap) + 1px));
+  --key-font-size: clamp(13px, 3vw, 19px);
+  display: inline-block;
+  margin: 0;
+  padding: 0 calc(min(var(--keyboard-width), 100vw) / 100);
+  min-width: var(--key-size);
+  min-height: 40px;
+  height: var(--key-size);
+  font-size: var(--key-font-size);
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  color: #000;
+  background: #e2e4e8;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  transition-property: border-color, transform;
+}
+
 .keyboard__key--backspace {
-  min-width: calc(min(var(--keyboard-width), 100vw) / 100 * 13);
+  padding-right: calc(min(var(--keyboard-width), 100vw) / 100 * 1.2);
+  min-width: calc(var(--key-size) * 1.5);
+  font-size: calc(var(--key-font-size) + 4px);
+  font-weight: 600;
+
+}
+
+.keyboard__key--used {
+  background: var(--used-2);
+}
+
+.keyboard__key--present {
+  background: var(--yellow);
+}
+
+.keyboard__key--truly {
+  background: var(--green);
 }

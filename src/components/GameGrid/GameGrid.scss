@@ -1,7 +1,7 @@
 .gameGrid {
   --columnsCount: 5;
   --rowsCount: 6;
-  --gameGrid-width: var(--app-width, 600px);
+  --gameGrid-width: var(--app-width);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,26 +10,38 @@
 }
 
 .gameGrid__grid {
+  --keys-gap: calc(min(var(--gameGrid-width), 100vw) / 100);
+  display: grid;
+  gap: var(--keys-gap);
+}
+
+.gameGrid__row {
   display: grid;
   grid-template-columns: repeat(var(--columnsCount), auto);
-  grid-template-rows: var(--rowsCount);
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  margin: auto;
+  gap: var(--keys-gap);
 }
 
 .gameGrid__cell {
+  --optimal-ratio: calc(1 / 7);
+  --key-size: calc(min(var(--gameGrid-width), 100vw) * var(--optimal-ratio) - (var(--keys-gap) + 5px));
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
-  font-size: clamp(15px, 10vw, 31px);
+  width: var(--key-size);
+  max-width: 60px;
+  height: var(--key-size);
+  max-height: 60px;
+  font-size: clamp(15px, 6vw, 31px);
   font-weight: 800;
   text-transform: uppercase;
   background: #f0f2f6;
   border-radius: 4px;
+  user-select: none;
+}
+
+.gameGrid__cell--used {
+  background: var(--used);
 }
 
 .gameGrid__cell--present {

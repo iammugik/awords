@@ -1,13 +1,19 @@
-$tablet-bp: 600px;
+$tablet-bp: 700px;
 $mobile-bp: 450px;
 
 $tablet: "max-width: #{$tablet-bp - 1}";
 $mobile: "max-width: #{$mobile-bp - 1}";
 
 :root {
-  --app-width: 600px;
-  --green: #c4f7a4;
-  --yellow: #f7e9a4;
+  // Colors
+  --grey: #c4d3d3;
+  --used: #d7dae3;
+  --used-2: #b1b6c3;
+  --red: #e7caca;
+  --green: #b4ee91;
+  --yellow: #faeb9e;
+
+  --app-width: 700px;
 
   @media ($tablet) {
     --app-width: 100vw;
