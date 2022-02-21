@@ -4,9 +4,8 @@ import {
   KEYBOARD_ROWS,
 } from "@/components/Keyboard/keyboards/ru-RU";
 import { onBeforeUnmount, onMounted, computed } from "vue";
-import type { State } from "@/stores/store";
+import type { State, Letter } from "@/stores/store";
 import { LetterStatus } from "@/stores/store";
-import type { Letter } from "@/stores/store";
 
 const props = defineProps<{
   guesses: State["guesses"];

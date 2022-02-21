@@ -1,8 +1,7 @@
 import type { InjectionKey } from "vue";
-import { createStore, useStore as baseUseStore, Store } from "vuex";
-import secretWords from "@/i18n/ru-RU/dictionaries/secretWords";
-import otherWords from "@/i18n/ru-RU/dictionaries/otherWords";
+import { createStore, Store, useStore as baseUseStore } from "vuex";
 import { getRandomElement } from "@/stores/utils";
+import { Locales } from "@/i18n/constants";
 
 export const key: InjectionKey<Store<State>> = Symbol();
 
@@ -35,7 +34,7 @@ export interface State {
   otherWords: string[];
 }
 
-const wordLengths = [5, 6, 7];
+const wordLengths = [4, 5, 6];
 
 const getDefaultState = () => {
   return {
@@ -45,8 +44,8 @@ const getDefaultState = () => {
     wordLength: 5,
     activeRow: 0,
     guesses: [[]],
-    secretWords,
-    otherWords,
+    secretWords: [],
+    otherWords: [],
   };
 };
 
@@ -55,19 +54,25 @@ export const store = createStore<State>({
     return getDefaultState();
   },
   mutations: {
-    CHANGE_STATUS(state, newStatus: GameStatus) {
-      state.status = newStatus;
+    SET_GAME_STATUS(state, status: GameStatus) {
+      state.status = status;
     },
     SET_WORD_LENGTH(state, length: number) {
       state.wordLength = length;
-      state.secretWords = secretWords.filter((w) => w.length === length);
-      state.otherWords = otherWords.filter((w) => w.length === length);
+      state.secretWords = state.secretWords.filter((w) => w.length === length);
+      state.otherWords = state.otherWords.filter((w) => w.length === length);
     },
     SET_SECRET_WORD(state, word: string) {
       state.secretWord = word;
     },
+    SET_DICTIONARIES(state, { secretWords, otherWords }) {
+      state.secretWords = secretWords;
+      state.otherWords = otherWords;
+    },
     RESET_GAME(state) {
-      Object.assign(state, getDefaultState());
+      state.secretWord = "";
+      state.activeRow = 0;
+      state.guesses = [[]];
     },
     NEXT_ROUND(state) {
       state.guesses.push([]);
@@ -106,13 +111,29 @@ export const store = createStore<State>({
     },
   },
   actions: {
-    async restartGame({ commit, state }) {
+    async restartGame(
+      { commit, state, dispatch },
+      locale: Locales = Locales.RU
+    ) {
       commit("RESET_GAME");
+      await dispatch("loadDictionaries", locale);
       const wordLength = getRandomElement(wordLengths);
       commit("SET_WORD_LENGTH", wordLength);
       const secretWord = getRandomElement(state.secretWords);
       commit("SET_SECRET_WORD", secretWord);
-      commit("CHANGE_STATUS", GameStatus.START);
+      commit("SET_GAME_STATUS", GameStatus.START);
+    },
+    async loadDictionaries({ state, commit }, locale: Locales) {
+      const secretWords = (
+        await import(`../i18n/dictionaries/${locale}/secretWords.ts`)
+      ).default;
+      const otherWords = (
+        await import(`../i18n/dictionaries/${locale}/otherWords.ts`)
+      ).default;
+      commit("SET_DICTIONARIES", {
+        secretWords,
+        otherWords,
+      });
     },
     async addLetter({ state, commit, dispatch }, letter) {
       if (state.guesses[state.activeRow].length === state.wordLength) return;
@@ -145,15 +166,15 @@ export const store = createStore<State>({
       commit("ACTUALIZE_LETTERS");
 
       if (state.secretWord === guess) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        console.log("Угадано!");
+        commit("SET_GAME_STATUS", GameStatus.END_SUCCESS);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         await dispatch("restartGame");
         return;
       }
 
       if (state.activeRow + 1 === state.rowsCount) {
+        commit("SET_GAME_STATUS", GameStatus.END_FAILURE);
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        console.log("Не угадано");
         await dispatch("restartGame");
         return;
       }

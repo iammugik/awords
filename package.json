@@ -8,7 +8,7 @@
     "test:unit": "vitest --environment jsdom",
     "typecheck": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "surge": "surge --domain awords.surge.sh"
+    "surge": "surge --domain awords.surge.sh --project ./dist"
   },
   "dependencies": {
     "vue": "^3.2.29",

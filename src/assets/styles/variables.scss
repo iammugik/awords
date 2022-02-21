@@ -1,6 +1,5 @@
 $tablet-bp: 700px;
 $mobile-bp: 450px;
-
 $tablet: "max-width: #{$tablet-bp - 1}";
 $mobile: "max-width: #{$mobile-bp - 1}";
 
@@ -10,8 +9,9 @@ $mobile: "max-width: #{$mobile-bp - 1}";
   --used: #d7dae3;
   --used-2: #b1b6c3;
   --red: #e7caca;
-  --green: #b4ee91;
-  --yellow: #faeb9e;
+  --yellow: linear-gradient(45deg, #fad79e, #fbe36a);
+  //--green: linear-gradient(45deg, #c4e052, #d3e87d);
+  --green: linear-gradient(45deg, #86c9f9, #a7fc83);
 
   --app-width: 700px;
 
