@@ -1,3 +1,3 @@
-export const getRandomElement = <T>(dictionary: T[]): T => {
-  return dictionary[Math.floor(Math.random() * dictionary.length)];
+export const getRandomElement = <T>(arr: T[]): T => {
+  return arr[Math.floor(Math.random() * arr.length)];
 };

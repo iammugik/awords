@@ -7,9 +7,12 @@ export const key: InjectionKey<Store<State>> = Symbol();
 
 export enum GameStatus {
   INIT = "init",
-  START = "start",
-  GAME_SUCCESS = "gameSuccess",
-  GAME_FAILURE = "gameFailure",
+  READY = "ready",
+  PRE_SUBMIT = "preSubmit",
+  SUBMITTING = "submitting",
+  GUESS_NOT_EXIST = "guessNotExist",
+  SUCCESS = "gameSuccess",
+  FAILURE = "gameFailure",
 }
 
 export enum LetterStatus {
@@ -32,11 +35,6 @@ export interface State {
   guesses: Letter[][];
   secretWords: string[];
   otherWords: string[];
-  popups: {
-    isWordAbsent: boolean;
-    isGameSuccess: boolean;
-    isGameFailure: boolean;
-  };
 }
 
 const wordLengths = [4, 5, 6];
@@ -51,17 +49,17 @@ const getDefaultState = () => {
     guesses: [[]],
     secretWords: [],
     otherWords: [],
-    popups: {
-      isWordAbsent: false,
-      isGameSuccess: false,
-      isGameFailure: false,
-    },
   };
 };
 
 export const store = createStore<State>({
   state() {
     return getDefaultState();
+  },
+  getters: {
+    state(state) {
+      return state;
+    },
   },
   mutations: {
     SET_GAME_STATUS(state, status: GameStatus) {
@@ -74,29 +72,16 @@ export const store = createStore<State>({
     },
     SET_SECRET_WORD(state, word: string) {
       state.secretWord = word;
+      console.log(state.secretWord);
     },
     SET_DICTIONARIES(state, { secretWords, otherWords }) {
       state.secretWords = secretWords;
       state.otherWords = otherWords;
     },
-    SET_POPUP_WORD_ABSENT(state, value: boolean) {
-      state.popups.isWordAbsent = value;
-    },
-    SET_POPUP_GAME_SUCCESS(state, value: boolean) {
-      state.popups.isGameSuccess = value;
-    },
-    SET_POPUP_GAME_FAILURE(state, value: boolean) {
-      state.popups.isGameFailure = value;
-    },
     RESET_GAME(state) {
       state.secretWord = "";
       state.activeRow = 0;
       state.guesses = [[]];
-      state.popups = {
-        isWordAbsent: false,
-        isGameSuccess: false,
-        isGameFailure: false,
-      };
     },
     NEXT_ROUND(state) {
       state.guesses.push([]);
@@ -145,7 +130,7 @@ export const store = createStore<State>({
       commit("SET_WORD_LENGTH", wordLength);
       const secretWord = getRandomElement(state.secretWords);
       commit("SET_SECRET_WORD", secretWord);
-      commit("SET_GAME_STATUS", GameStatus.START);
+      commit("SET_GAME_STATUS", GameStatus.READY);
     },
     async loadDictionaries({ state, commit }, locale: Locales) {
       const secretWords = (
@@ -167,51 +152,54 @@ export const store = createStore<State>({
       }
 
       if (state.guesses[state.activeRow].length === state.wordLength) {
+        commit("SET_GAME_STATUS", GameStatus.PRE_SUBMIT);
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        await dispatch("submitGuess");
+        if (state.status === GameStatus.PRE_SUBMIT) {
+          await dispatch("submitGuess");
+        }
       }
     },
     deleteLetter({ state, commit }) {
+      if (state.guesses[state.activeRow].length === state.wordLength) {
+        commit("SET_GAME_STATUS", GameStatus.READY);
+      }
+
       if (state.guesses[state.activeRow].length > 0) {
         commit("DELETE_LETTER");
       }
     },
     async submitGuess({ state, commit, dispatch }) {
+      commit("SET_GAME_STATUS", GameStatus.SUBMITTING);
+
       const guess = state.guesses[state.activeRow]
         .map((letterObj) => letterObj.letter)
         .join("");
       const isGuessExist = await dispatch("checkGuessExist", guess);
 
       if (!isGuessExist) {
-        commit("SET_POPUP_WORD_ABSENT", true);
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        commit("SET_POPUP_WORD_ABSENT", false);
+        commit("SET_GAME_STATUS", GameStatus.GUESS_NOT_EXIST);
         return;
       }
 
       commit("ACTUALIZE_LETTERS");
 
       if (state.secretWord === guess) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        commit("SET_GAME_STATUS", GameStatus.GAME_SUCCESS);
-        commit("SET_POPUP_GAME_SUCCESS", true);
+        commit("SET_GAME_STATUS", GameStatus.SUCCESS);
         await new Promise((resolve) => setTimeout(resolve, 2000));
-        commit("SET_POPUP_GAME_SUCCESS", false);
         await dispatch("restartGame");
         return;
       }
 
       if (state.activeRow + 1 === state.rowsCount) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        commit("SET_GAME_STATUS", GameStatus.GAME_FAILURE);
-        commit("SET_POPUP_GAME_FAILURE", true);
+        commit("SET_GAME_STATUS", GameStatus.FAILURE);
         await new Promise((resolve) => setTimeout(resolve, 2000));
-        commit("SET_POPUP_GAME_FAILURE", false);
         await dispatch("restartGame");
         return;
       }
 
       commit("NEXT_ROUND");
+      commit("SET_GAME_STATUS", GameStatus.READY);
     },
     checkGuessExist({ state }, guess) {
       return (

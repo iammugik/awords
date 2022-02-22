@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { useStore } from "@/stores/store";
+import { useStore, GameStatus } from "@/stores/store";
 import Toast from "@/components/Toast/Toast.vue";
+import { computed } from "vue";
 
 const { state } = useStore();
+const isFailure = computed(() => state.status === GameStatus.FAILURE);
 </script>
 
 <template>
@@ -32,27 +34,12 @@ const { state } = useStore();
 
         <transition name="fade">
           <Toast
-            v-if="state.popups.isWordAbsent && rowIndex === state.activeRow"
+            v-if="
+              state.status === GameStatus.GUESS_NOT_EXIST &&
+              rowIndex === state.activeRow
+            "
           >
             Такого слова нет в базе
-          </Toast>
-        </transition>
-
-        <transition name="fade">
-          <Toast
-            v-if="state.popups.isGameSuccess && rowIndex === state.activeRow"
-            class="gameGrid__popup--success"
-          >
-            Угадано!
-          </Toast>
-        </transition>
-
-        <transition name="fade">
-          <Toast
-            v-if="state.popups.isGameFailure && rowIndex === state.activeRow"
-            class="gameGrid__popup--failure"
-          >
-            {{ state.secretWord }}
           </Toast>
         </transition>
       </div>
