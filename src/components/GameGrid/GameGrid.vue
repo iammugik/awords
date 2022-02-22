@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { useStore, GameStatus } from "@/stores/store";
 import Toast from "@/components/Toast/Toast.vue";
-import { computed } from "vue";
 
 const { state } = useStore();
-const isFailure = computed(() => state.status === GameStatus.FAILURE);
 </script>
 
 <template>
@@ -42,6 +40,9 @@ const isFailure = computed(() => state.status === GameStatus.FAILURE);
             Такого слова нет в базе
           </Toast>
         </transition>
+      </div>
+      <div v-if="state.status === GameStatus.FAILURE" class="gameGrid__failure">
+        {{ state.secretWord }}
       </div>
     </div>
   </div>

@@ -52,3 +52,14 @@
 .gameGrid__cell--truly {
   background: var(--green);
 }
+
+.gameGrid__failure {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #f00;
+  transform: translateX(-50%);
+}
