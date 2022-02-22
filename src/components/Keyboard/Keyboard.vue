@@ -4,16 +4,13 @@ import {
   KEYBOARD_ROWS,
 } from "@/components/Keyboard/keyboards/ru-RU";
 import { onBeforeUnmount, onMounted, computed } from "vue";
-import type { State, Letter } from "@/stores/store";
-import { LetterStatus } from "@/stores/store";
+import type { Letter } from "@/stores/store";
+import { LetterStatus, useStore } from "@/stores/store";
 
-const props = defineProps<{
-  guesses: State["guesses"];
-  onKeyClick: (key: string) => void;
-}>();
+const { state, dispatch } = useStore();
 
 const getLettersByStatus = (st: LetterStatus): Letter[] =>
-  props.guesses
+  state.guesses
     .flat()
     .filter((i) => i.status === st)
     .map((i) => i.letter);
@@ -22,10 +19,18 @@ const usedLetters = computed(() => getLettersByStatus(LetterStatus.USED));
 const presentLetters = computed(() => getLettersByStatus(LetterStatus.PRESENT));
 const trulyLetters = computed(() => getLettersByStatus(LetterStatus.TRULY));
 
+const handleKeyClick = async (key: string) => {
+  if (key === "backspace") {
+    await dispatch("deleteLetter");
+    return;
+  }
+  await dispatch("addLetter", key);
+};
+
 const handleHardKeyClick = (event: KeyboardEvent) => {
   const key = event.key.toLowerCase();
   if (!KEYBOARD_KEYS.includes(key)) return;
-  props.onKeyClick(key);
+  handleKeyClick(key);
 };
 
 onMounted(() => {
@@ -55,7 +60,7 @@ onBeforeUnmount(() => {
         ]"
         v-for="key in row"
         :key="key"
-        @click="onKeyClick(key)"
+        @click="handleKeyClick(key)"
       >
         {{ key === "backspace" ? "⌫" : key }}
       </button>

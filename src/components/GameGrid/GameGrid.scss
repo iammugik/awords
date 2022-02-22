@@ -10,6 +10,7 @@
 }
 
 .gameGrid__grid {
+  position: relative;
   --keys-gap: calc(min(var(--gameGrid-width), 100vw) / 100);
   display: grid;
   gap: var(--keys-gap);
@@ -50,5 +51,16 @@
 
 .gameGrid__cell--truly {
   background: var(--green);
+}
 
+.gameGrid__popup--failure {
+  font-size: 19px;
+  font-weight: 700;
+  background: #b93b3b;
+}
+
+.gameGrid__popup--success {
+  font-size: 19px;
+  font-weight: 700;
+  background: #55ab55;
 }
