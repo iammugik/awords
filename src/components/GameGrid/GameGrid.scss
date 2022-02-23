@@ -36,7 +36,8 @@
   font-size: clamp(15px, 6vw, 31px);
   font-weight: 800;
   text-transform: uppercase;
-  background: #f0f2f6;
+  background: #d3edff;
+  background: var(--gameGrid-cell);
   border-radius: 4px;
   user-select: none;
 }

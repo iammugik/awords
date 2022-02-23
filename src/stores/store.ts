@@ -37,7 +37,7 @@ export interface State {
   otherWords: string[];
 }
 
-const wordLengths = [4, 5, 6];
+const wordLengths = [4, 5, 6, 7];
 
 const getDefaultState = () => {
   return {
@@ -72,7 +72,6 @@ export const store = createStore<State>({
     },
     SET_SECRET_WORD(state, word: string) {
       state.secretWord = word;
-      console.log(state.secretWord);
     },
     SET_DICTIONARIES(state, { secretWords, otherWords }) {
       state.secretWords = secretWords;
@@ -133,12 +132,12 @@ export const store = createStore<State>({
       commit("SET_GAME_STATUS", GameStatus.READY);
     },
     async loadDictionaries({ state, commit }, locale: Locales) {
-      const secretWords = (
-        await import(`../i18n/dictionaries/${locale}/secretWords.ts`)
-      ).default;
-      const otherWords = (
-        await import(`../i18n/dictionaries/${locale}/otherWords.ts`)
-      ).default;
+      const secretWords = await (
+        await fetch(`/dictionaries/${locale}/secretWords.json`)
+      ).json();
+      const otherWords = await (
+        await fetch(`/dictionaries/${locale}/otherWords.json`)
+      ).json();
       commit("SET_DICTIONARIES", {
         secretWords,
         otherWords,
