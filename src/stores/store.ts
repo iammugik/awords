@@ -1,6 +1,6 @@
 import type { InjectionKey } from "vue";
 import { createStore, Store, useStore as baseUseStore } from "vuex";
-import { getRandomElement } from "@/stores/utils";
+import { getRandomElement, pause } from "@/stores/utils";
 import { Locales } from "@/i18n/constants";
 
 export const key: InjectionKey<Store<State>> = Symbol();
@@ -37,7 +37,7 @@ export interface State {
   otherWords: string[];
 }
 
-const wordLengths = [4, 5, 6, 7];
+const wordLengths = [4, 5, 6, 7, 8];
 
 const getDefaultState = () => {
   return {
@@ -152,7 +152,7 @@ export const store = createStore<State>({
 
       if (state.guesses[state.activeRow].length === state.wordLength) {
         commit("SET_GAME_STATUS", GameStatus.PRE_SUBMIT);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await pause(1000);
         if (state.status === GameStatus.PRE_SUBMIT) {
           await dispatch("submitGuess");
         }
@@ -184,15 +184,15 @@ export const store = createStore<State>({
 
       if (state.secretWord === guess) {
         commit("SET_GAME_STATUS", GameStatus.SUCCESS);
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await pause(2000);
         await dispatch("restartGame");
         return;
       }
 
       if (state.activeRow + 1 === state.rowsCount) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await pause(1000);
         commit("SET_GAME_STATUS", GameStatus.FAILURE);
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await pause(2000);
         await dispatch("restartGame");
         return;
       }
