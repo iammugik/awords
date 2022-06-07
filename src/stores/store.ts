@@ -37,7 +37,7 @@ export interface State {
   otherWords: string[];
 }
 
-const wordLengths = [4, 5, 6, 7, 8];
+const wordLengths = [4, 5, 6, 7];
 
 const getDefaultState = () => {
   return {
