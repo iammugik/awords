@@ -9,6 +9,13 @@
   width: var(--gameGrid-width);
 }
 
+.gameGrid--init {
+  .gameGrid__cell {
+    visibility: hidden;
+    transform: scale(0);
+  }
+}
+
 .gameGrid__grid {
   position: relative;
   --keys-gap: calc(min(var(--gameGrid-width), 100vw) / 100);
@@ -40,6 +47,7 @@
   background: var(--gameGrid-cell);
   border-radius: 4px;
   user-select: none;
+  transition: transform 0.3s , visibility 0.3s;
 }
 
 .gameGrid__cell--used {

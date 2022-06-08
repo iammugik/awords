@@ -8,6 +8,7 @@ const { state } = useStore();
 <template>
   <div
     class="gameGrid"
+    :class="{ 'gameGrid--init': state.status === GameStatus.INIT }"
     :style="`--columnsCount: ${state.wordLength}; --rowsCount: ${state.rowsCount}`"
   >
     <div class="gameGrid__grid">

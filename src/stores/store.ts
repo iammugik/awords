@@ -13,6 +13,7 @@ export enum GameStatus {
   GUESS_NOT_EXIST = "guessNotExist",
   SUCCESS = "gameSuccess",
   FAILURE = "gameFailure",
+  ENDING = "ENDING",
 }
 
 export enum LetterStatus {
@@ -125,6 +126,8 @@ export const store = createStore<State>({
       { commit, state, dispatch },
       locale: Locales = Locales.RU
     ) {
+      commit("SET_GAME_STATUS", GameStatus.INIT);
+      await pause(300);
       commit("RESET_GAME");
       await dispatch("loadDictionaries", locale);
       const oldWordLength = localStorage.getItem("awords:wordLength")
@@ -137,7 +140,9 @@ export const store = createStore<State>({
       commit("SET_WORD_LENGTH", wordLength);
       const secretWord = getRandomElement(state.secretWords);
       commit("SET_SECRET_WORD", secretWord);
+      await pause(300);
       commit("SET_GAME_STATUS", GameStatus.READY);
+      return true;
     },
     async loadDictionaries({ state, commit }, locale: Locales) {
       const secretWords = await (
