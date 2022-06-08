@@ -37,14 +37,15 @@ export interface State {
   otherWords: string[];
 }
 
-const wordLengths = [4, 5, 6, 7];
+const wordLengthRange = [4, 7];
+const wordLengthStart = wordLengthRange[0] - 1;
 
 const getDefaultState = () => {
   return {
     status: GameStatus.INIT,
     secretWord: "",
     rowsCount: 6,
-    wordLength: 5,
+    wordLength: wordLengthStart,
     activeRow: 0,
     guesses: [[]],
     secretWords: [],
@@ -67,6 +68,7 @@ export const store = createStore<State>({
     },
     SET_WORD_LENGTH(state, length: number) {
       state.wordLength = length;
+      localStorage.setItem("awords:wordLength", length.toString());
       state.secretWords = state.secretWords.filter((w) => w.length === length);
       state.otherWords = state.otherWords.filter((w) => w.length === length);
     },
@@ -125,7 +127,13 @@ export const store = createStore<State>({
     ) {
       commit("RESET_GAME");
       await dispatch("loadDictionaries", locale);
-      const wordLength = getRandomElement(wordLengths);
+      const oldWordLength = localStorage.getItem("awords:wordLength")
+        ? Number(localStorage.getItem("awords:wordLength"))
+        : wordLengthStart;
+      const wordLength =
+        oldWordLength < wordLengthRange[1]
+          ? oldWordLength + 1
+          : wordLengthRange[0];
       commit("SET_WORD_LENGTH", wordLength);
       const secretWord = getRandomElement(state.secretWords);
       commit("SET_SECRET_WORD", secretWord);
